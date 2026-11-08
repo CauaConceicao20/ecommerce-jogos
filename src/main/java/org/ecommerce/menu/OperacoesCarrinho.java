@@ -2,6 +2,7 @@
 package org.ecommerce.menu;
 
 import org.ecommerce.dao.ItemCarrinhoDao;
+import org.ecommerce.services.AutenticacaoService;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -11,6 +12,7 @@ public class OperacoesCarrinho {
     private final Scanner scanner;
     private final ItemCarrinhoDao itemCarrinhoDao =
         new ItemCarrinhoDao();
+    private final AutenticacaoService autenticacaoService = new AutenticacaoService();
 
     public OperacoesCarrinho(Scanner scanner) {
         this.scanner = scanner;
@@ -19,9 +21,7 @@ public class OperacoesCarrinho {
     public void adicionarJogo() {
 
         try {
-            System.out.print("ID do usuário: ");
-            Long usuarioId =
-                Long.parseLong(scanner.nextLine());
+            Long usuarioId = autenticacaoService.retornaUsuarioLogado().getId();
 
             System.out.print("ID do jogo: ");
             Long jogoId =

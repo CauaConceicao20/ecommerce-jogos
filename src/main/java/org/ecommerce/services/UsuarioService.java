@@ -16,4 +16,8 @@ public class UsuarioService {
     public Set<Usuario> listarTodos() {
         return usuarioDao.listarTodos();
     }
+
+    public Usuario buscarPorEmail(String email) {
+        return usuarioDao.buscaPorEmail(email);
+    }
 }

@@ -100,4 +100,48 @@ public class UsuarioDao {
             }
         }
     }
+
+    public Usuario buscaPorEmail(String email) {
+        String sql = "SELECT u.*, r.name AS role_name, r.description AS role_description" +
+                     " FROM public.users u JOIN public.roles r ON u.role_id = r.id" +
+                     " WHERE u.email = ?";
+
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        Usuario usuario = new Usuario();
+        try {
+            conn = ConexaoBancoDados.obterConexao();
+            pstm = conn.prepareStatement(sql);
+            pstm.setString(1, email);
+
+
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) {
+                Role role = new Role();
+                role.setId(rs.getLong("role_id"));
+                role.setNome(rs.getString("role_name"));
+                role.setDescricao(rs.getString("role_description"));
+
+                usuario.setId(rs.getLong("id"));
+                usuario.setNome(rs.getString("name"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setSenha(rs.getString("password"));
+                usuario.setTelefone(rs.getString("phone"));
+                usuario.setAtivo(rs.getBoolean("active"));
+                usuario.setRole(role);
+                return usuario;
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return usuario;
+        } finally {
+            try {
+                if (pstm != null) pstm.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

@@ -37,4 +37,12 @@ public class ItemCarrinho {
 
     public LocalDateTime getDataAtualizacao() { return dataAtualizacao; }
     public void setDataAtualizacao(LocalDateTime dataAtualizacao) { this.dataAtualizacao = dataAtualizacao; }
+
+    public void adicionaItem() {
+        this.quantidade++;
+    }
+
+    public void removeItem() {
+        this.quantidade--;
+    }
 }
