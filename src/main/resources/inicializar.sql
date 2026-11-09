@@ -113,6 +113,9 @@ INSERT INTO public.users (name, email, password, phone, role_id)
 SELECT 'Admin', 'admin@admin.com', 'admin123', '00000000000', id
 FROM public.roles WHERE name = 'ADMIN';
 
+INSERT INTO public.carts (user_id)
+SELECT id FROM public.users WHERE email = 'admin@admin.com';
+
 INSERT INTO public.categories (name, description) VALUES
     ('Ação', 'Jogos de ação e combate'),
     ('Aventura', 'Jogos de exploração e aventura'),
