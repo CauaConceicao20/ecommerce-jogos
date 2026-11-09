@@ -2,6 +2,7 @@ package org.ecommerce.menu;
 
 import org.ecommerce.model.usuario.Role;
 import org.ecommerce.model.usuario.Usuario;
+import org.ecommerce.services.AutenticacaoService;
 import org.ecommerce.services.RoleService;
 import org.ecommerce.services.UsuarioService;
 
@@ -13,9 +14,27 @@ public class OperacoesUsuario {
     private final Scanner scanner;
     private final UsuarioService usuarioService = new UsuarioService();
     private final RoleService roleService = new RoleService();
+    private final AutenticacaoService autenticacaoService;
 
-    public OperacoesUsuario(Scanner scanner) {
+    public OperacoesUsuario(Scanner scanner, AutenticacaoService autenticacaoService) {
         this.scanner = scanner;
+        this.autenticacaoService = autenticacaoService;
+    }
+
+    public void login() {
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+
+        System.out.print("Senha: ");
+        String senha = scanner.nextLine();
+
+        autenticacaoService.login(email, senha);
+
+        if (autenticacaoService.retornaUsuarioLogado() != null) {
+            System.out.println("Bem-vindo, " + autenticacaoService.retornaUsuarioLogado().getNome() + "!");
+        } else {
+            System.out.println("Email ou senha inválidos.");
+        }
     }
 
     public void cadastrarUsuario() {

@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS public.cart_items;
+DROP TABLE IF EXISTS public.cart;
 DROP TABLE IF EXISTS public.order_items;
 DROP TABLE IF EXISTS public.orders;
 DROP TABLE IF EXISTS public.games;
@@ -79,6 +81,12 @@ CREATE TABLE IF NOT EXISTS public.order_items (
     CONSTRAINT fk_order_item_order FOREIGN KEY (order_id) REFERENCES public.orders(id),
     CONSTRAINT fk_order_item_game FOREIGN KEY (game_id) REFERENCES public.games(id)
 );
+
+INSERT INTO public.roles (name, description) VALUES ('ADMIN', 'Administrador do sistema');
+
+INSERT INTO public.users (name, email, password, phone, role_id)
+SELECT 'Admin', 'admin@admin.com', 'admin123', '00000000000', id
+FROM public.roles WHERE name = 'ADMIN';
 
 INSERT INTO public.categories (name, description) VALUES
     ('Ação', 'Jogos de ação e combate'),
