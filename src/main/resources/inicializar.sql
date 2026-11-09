@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS public.cart_items;
-DROP TABLE IF EXISTS public.cart;
+DROP TABLE IF EXISTS public.carts;
 DROP TABLE IF EXISTS public.order_items;
 DROP TABLE IF EXISTS public.orders;
 DROP TABLE IF EXISTS public.games;
@@ -82,6 +82,31 @@ CREATE TABLE IF NOT EXISTS public.order_items (
     CONSTRAINT fk_order_item_game FOREIGN KEY (game_id) REFERENCES public.games(id)
 );
 
+CREATE TABLE IF NOT EXISTS public.carts (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    user_id BIGINT UNIQUE NOT NULL,
+    subtotal DECIMAL(8, 2) NOT NULL DEFAULT 0,
+    CONSTRAINT fk_cart_user FOREIGN KEY (user_id)
+    REFERENCES public.users(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.cart_items (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    quantity INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    cart_id BIGINT NOT NULL,
+    game_id BIGINT NOT NULL,
+    CONSTRAINT fk_cart_item_cart
+    FOREIGN KEY (cart_id) REFERENCES public.carts(id),
+    CONSTRAINT fk_cart_item_game
+    FOREIGN KEY (game_id) REFERENCES public.games(id),
+    CONSTRAINT uq_cart_game UNIQUE (cart_id, game_id)
+);
+
+
 INSERT INTO public.roles (name, description) VALUES ('ADMIN', 'Administrador do sistema');
 
 INSERT INTO public.users (name, email, password, phone, role_id)
@@ -94,3 +119,9 @@ INSERT INTO public.categories (name, description) VALUES
     ('RPG', 'Jogos de interpretação de papéis'),
     ('Esporte', 'Jogos esportivos'),
     ('Estratégia', 'Jogos de estratégia e planejamento');
+
+INSERT INTO public.status (name, description) VALUES
+    ('PENDENTE',    'Pedido aguardando pagamento'),
+    ('PAGO',        'Pagamento confirmado'),
+    ('ENVIADO',     'Pedido enviado ao cliente'),
+    ('CANCELADO',   'Pedido cancelado');

@@ -3,6 +3,7 @@ package org.ecommerce;
 import org.ecommerce.config.InicializadorBancoDados;
 import org.ecommerce.menu.OperacoesCarrinho;
 import org.ecommerce.menu.OperacoesJogo;
+import org.ecommerce.menu.OperacoesPedido;
 import org.ecommerce.menu.OperacoesUsuario;
 import org.ecommerce.services.AutenticacaoService;
 
@@ -15,7 +16,8 @@ public class Main {
     private static final AutenticacaoService autenticacaoService = new AutenticacaoService();
     private static final OperacoesUsuario OPERACOES_USUARIO = new OperacoesUsuario(scanner, autenticacaoService);
     private static final OperacoesJogo OPERACOES_JOGO = new OperacoesJogo(scanner);
-    private static final OperacoesCarrinho OPERACOES_CARRINHO = new OperacoesCarrinho(scanner);
+    private static final OperacoesPedido OPERACOES_PEDIDO = new OperacoesPedido(scanner, autenticacaoService);
+    private static final OperacoesCarrinho OPERACOES_CARRINHO = new OperacoesCarrinho(scanner, autenticacaoService);
 
     public static void main(String[] args) {
         try {
@@ -52,7 +54,8 @@ public class Main {
             } else {
                 System.out.println("1. Cadastrar jogo");
                 System.out.println("2. Colocar jogo no carrinho");
-                System.out.println("3. Deslogar");
+                System.out.println("3. Fazer pedido");
+                System.out.println("4. Deslogar");
                 System.out.println("0. Sair");
                 System.out.print("Opção: ");
                 String entradaLogado = scanner.nextLine().trim();
@@ -62,7 +65,8 @@ public class Main {
                 switch (opcao) {
                     case 1 -> OPERACOES_JOGO.cadastrarJogo();
                     case 2 -> OPERACOES_CARRINHO.adicionarJogo();
-                    case 3 -> autenticacaoService.logout();
+                    case 3 -> OPERACOES_PEDIDO.fazerPedido();
+                    case 4 -> autenticacaoService.logout();
                     case 0 -> System.out.println("Saindo...");
                     default -> System.out.println("Opção inválida.");
                 }
