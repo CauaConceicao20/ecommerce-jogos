@@ -24,6 +24,9 @@ public class CategoriaDao {
             pstm.setString(2, categoria.getDescricao());
             pstm.execute();
 
+            ResultSet rs = pstm.getGeneratedKeys();
+            if (rs.next()) categoria.setId(rs.getLong(1));
+
             return categoria;
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,13 +2,75 @@
 package org.ecommerce.dao;
 
 import org.ecommerce.config.ConexaoBancoDados;
+import org.ecommerce.model.carrinho.ItemCarrinho;
+import org.ecommerce.model.jogo.Jogo;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCarrinhoDao {
+
+    public List<ItemCarrinho> listarPorUsuario(Long usuarioId) {
+        String sql =
+            "SELECT ci.id, ci.quantity, g.id AS game_id, g.name, g.price " +
+            "FROM public.cart_items ci " +
+            "JOIN public.carts c ON ci.cart_id = c.id " +
+            "JOIN public.games g ON ci.game_id = g.id " +
+            "WHERE c.user_id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        List<ItemCarrinho> itens = new ArrayList<>();
+        try {
+            conn = ConexaoBancoDados.obterConexao();
+            pstm = conn.prepareStatement(sql);
+            pstm.setLong(1, usuarioId);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                Jogo jogo = new Jogo(rs.getString("name"), null, rs.getDouble("price"), 0);
+                jogo.setId(rs.getLong("game_id"));
+                ItemCarrinho item = new ItemCarrinho(rs.getInt("quantity"), jogo);
+                item.setId(rs.getLong("id"));
+                itens.add(item);
+            }
+            return itens;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return itens;
+        } finally {
+            try {
+                if (pstm != null) pstm.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }
+
+    public void removerItens(List<Long> itemIds) {
+        String sql = "DELETE FROM public.cart_items WHERE id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        try {
+            conn = ConexaoBancoDados.obterConexao();
+            conn.setAutoCommit(false);
+            pstm = conn.prepareStatement(sql);
+            for (Long id : itemIds) {
+                pstm.setLong(1, id);
+                pstm.addBatch();
+            }
+            pstm.executeBatch();
+            conn.commit();
+        } catch (SQLException e) {
+            try { if (conn != null) conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstm != null) pstm.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }
 
     public void adicionarJogo(Long usuarioId, Long jogoId, int quantidade)
             throws SQLException {

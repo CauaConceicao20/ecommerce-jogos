@@ -1,4 +1,3 @@
-
 package org.ecommerce.menu;
 
 import org.ecommerce.dao.ItemCarrinhoDao;
@@ -10,31 +9,25 @@ import java.util.Scanner;
 public class OperacoesCarrinho {
 
     private final Scanner scanner;
-    private final ItemCarrinhoDao itemCarrinhoDao =
-        new ItemCarrinhoDao();
-    private final AutenticacaoService autenticacaoService = new AutenticacaoService();
+    private final ItemCarrinhoDao itemCarrinhoDao = new ItemCarrinhoDao();
+    private final AutenticacaoService autenticacaoService;
 
-    public OperacoesCarrinho(Scanner scanner) {
+    public OperacoesCarrinho(Scanner scanner, AutenticacaoService autenticacaoService) {
         this.scanner = scanner;
+        this.autenticacaoService = autenticacaoService;
     }
 
     public void adicionarJogo() {
-
         try {
             Long usuarioId = autenticacaoService.retornaUsuarioLogado().getId();
 
             System.out.print("ID do jogo: ");
-            Long jogoId =
-                Long.parseLong(scanner.nextLine());
+            Long jogoId = Long.parseLong(scanner.nextLine());
 
             System.out.print("Quantidade: ");
-            int quantidade =
-                Integer.parseInt(scanner.nextLine());
+            int quantidade = Integer.parseInt(scanner.nextLine());
 
-            itemCarrinhoDao.adicionarJogo(
-                usuarioId, jogoId, quantidade
-            );
-
+            itemCarrinhoDao.adicionarJogo(usuarioId, jogoId, quantidade);
         } catch (SQLException | IllegalArgumentException e) {
             System.out.println("Erro: " + e.getMessage());
         }
