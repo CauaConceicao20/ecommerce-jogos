@@ -33,6 +33,10 @@ public class OperacoesCarrinho {
         }
     }
 
+    /*
+    Faça a listagem dos items que estão no carrinho atualmente para que seja
+    possivel ver qual item queremos solucionar se vazio informa e para a operação
+     */
 public void removerJogo() {
     try {
         Long usuarioId = autenticacaoService.retornaUsuarioLogado().getId();

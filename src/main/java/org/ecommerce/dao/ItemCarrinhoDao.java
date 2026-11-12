@@ -204,20 +204,32 @@ public class ItemCarrinhoDao {
         }
     }
 
+    //Falta validar se o carrinho está vazio caso vazio mostrar uma mensagem e parar tudo.
+    /*
+    * Outro ponto é observe que vc cria varios PreparedStatement para cada operação
+    * poderia ser um metodo separado deixando esse metodo removerUnidade bem menor
+    * e os outros metodos auxiliares reutilizaveis cuidado apenas com a Connection do banco
+    * e com o commit automatico com essas dicas aqui vc tmb vai conseguir ver que os metodos
+    * acima tmb podem ser diminuidos como exemplo vc pode ver o inserir em ItemPedidoDao fica a dica.
+     */
     public void removerUmaUnidade(Long usuarioId, Long jogoId) throws SQLException {
-
+        //Transforme em um metodo e retorne o Item pedido
     String sqlBuscar =
         "SELECT ci.id, ci.quantity " +
         "FROM public.cart_items ci " +
         "JOIN public.carts c ON ci.cart_id = c.id " +
         "WHERE c.user_id = ? AND ci.game_id = ? " +
         "FOR UPDATE";
-
+       //Tambem transforme em um metodo para fazer a redução da quantidade
     String sqlAtualizar =
         "UPDATE public.cart_items " +
         "SET quantity = quantity - 1, updated_at = NOW() " +
         "WHERE id = ?";
+       //Aqui tmb transforme em um metodo para exclusão
 
+        /*OBS: Fazendo isso vc vai deixar o metodo mais limpo
+        * Tambem vai conseguir reutilizar os metodos em outras operações
+        */
     String sqlExcluir =
         "DELETE FROM public.cart_items WHERE id = ?";
 
