@@ -32,4 +32,24 @@ public class OperacoesCarrinho {
             System.out.println("Erro: " + e.getMessage());
         }
     }
+
+    /*
+    Faça a listagem dos items que estão no carrinho atualmente para que seja
+    possivel ver qual item queremos solucionar se vazio informa e para a operação
+     */
+public void removerJogo() {
+    try {
+        Long usuarioId = autenticacaoService.retornaUsuarioLogado().getId();
+
+        System.out.print("ID do jogo que deseja remover: ");
+        Long jogoId = Long.parseLong(scanner.nextLine());
+
+        itemCarrinhoDao.removerUmaUnidade(usuarioId, jogoId);
+
+    } catch (SQLException | IllegalArgumentException e) {
+        System.out.println("Erro: " + e.getMessage());
+    }
+}
+
+
 }
